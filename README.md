@@ -22,16 +22,9 @@ Before you begin, make sure you have:
 
 ## Setup Instructions
 
-### 0. Configure Bundle ID and Development Team
+### 0. Configure Development Team
 
-The project uses a `Config.xcconfig` file to manage build settings. You need to configure your bundle identifier and development team ID:
-
-1. Open `Config.xcconfig` in the project root
-2. Update the following values:
-   - **PRODUCT_BUNDLE_IDENTIFIER**: Change to your own bundle identifier (e.g., `com.yourcompany.ProxLock-Demo`)
-   - **DEVELOPMENT_TEAM**: Change to your Apple Developer Team ID
-     - Find your Team ID in Xcode: **Preferences** → **Accounts** → Select your team → **Team ID**
-     - Or in the [Apple Developer Portal](https://developer.apple.com/account) under Membership
+Open the `Signing & Capabilities` tab under the `ProxLock-Demo` target and select your development team.
 
 **Example:**
 ```
