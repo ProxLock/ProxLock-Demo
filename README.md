@@ -56,5 +56,5 @@ All demo projects require:
 
 ## License
 
-These are sample projects for demonstration purposes.
+These are sample projects for demonstration purposes licensed under the [MIT License](LICENSE).
 
