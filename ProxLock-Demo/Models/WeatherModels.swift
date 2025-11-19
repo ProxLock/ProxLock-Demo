@@ -274,11 +274,14 @@ extension StormglassResponse {
             let date = dateFormatter.date(from: firstHour.time) ?? Date()
             let dateEpoch = Int(date.timeIntervalSince1970)
             
-            // Calculate daily min/max from hourly data
-            let temps = dayHours.compactMap { $0.airTemperature?.value }
-            let maxTemp = temps.max() ?? 0
-            let minTemp = temps.min() ?? 0
-            let avgTemp = temps.isEmpty ? 0 : temps.reduce(0, +) / Double(temps.count)
+            // Calculate daily min/max from hourly data (API returns Celsius)
+            let tempsC = dayHours.compactMap { $0.airTemperature?.value }
+            let maxTempC = tempsC.max() ?? 0
+            let minTempC = tempsC.min() ?? 0
+            let avgTempC = tempsC.isEmpty ? 0 : tempsC.reduce(0, +) / Double(tempsC.count)
+            let maxTempF = celsiusToFahrenheit(maxTempC)
+            let minTempF = celsiusToFahrenheit(minTempC)
+            let avgTempF = celsiusToFahrenheit(avgTempC)
             
             let winds = dayHours.compactMap { $0.windSpeed?.value }
             let maxWind = winds.max() ?? 0
@@ -302,12 +305,12 @@ extension StormglassResponse {
                 date: dateKey,
                 date_epoch: dateEpoch,
                 day: DayForecast(
-                    maxtemp_c: celsiusFromFahrenheit(maxTemp),
-                    maxtemp_f: maxTemp,
-                    mintemp_c: celsiusFromFahrenheit(minTemp),
-                    mintemp_f: minTemp,
-                    avgtemp_c: celsiusFromFahrenheit(avgTemp),
-                    avgtemp_f: avgTemp,
+                    maxtemp_c: maxTempC,
+                    maxtemp_f: maxTempF,
+                    mintemp_c: minTempC,
+                    mintemp_f: minTempF,
+                    avgtemp_c: avgTempC,
+                    avgtemp_f: avgTempF,
                     maxwind_mph: maxWind,
                     maxwind_kph: mphToKph(maxWind),
                     totalprecip_mm: precip * 25.4,
@@ -372,10 +375,13 @@ extension StormglassHour {
         let epoch = Int(date.timeIntervalSince1970)
         let dateString = formatDateTime(date)
         
-        let temp = airTemperature?.value ?? 0
+        // API returns temperature in Celsius
+        let tempC = airTemperature?.value ?? 0
+        let tempF = celsiusToFahrenheit(tempC)
         let humidity = self.humidity?.value ?? 0
-        // Calculate apparent temperature from air temperature and humidity
-        let apparentTemp = calculateApparentTemperature(temp: temp, humidity: humidity)
+        // Calculate apparent temperature (functions expect Fahrenheit)
+        let apparentTempF = calculateApparentTemperature(temp: tempF, humidity: humidity)
+        let apparentTempC = fahrenheitToCelsius(apparentTempF)
         let windSpeed = self.windSpeed?.value ?? 0
         let windDir = windDirection?.value ?? 0
         let pressure = self.pressure?.value ?? 0
@@ -395,8 +401,8 @@ extension StormglassHour {
         return Current(
             last_updated_epoch: epoch,
             last_updated: dateString,
-            temp_c: celsiusFromFahrenheit(temp),
-            temp_f: temp,
+            temp_c: tempC,
+            temp_f: tempF,
             is_day: isDay ? 1 : 0,
             condition: condition,
             wind_mph: windSpeed,
@@ -409,8 +415,8 @@ extension StormglassHour {
             precip_in: precip,
             humidity: Int(humidity),
             cloud: Int(cloudCover),
-            feelslike_c: celsiusFromFahrenheit(apparentTemp),
-            feelslike_f: apparentTemp,
+            feelslike_c: apparentTempC,
+            feelslike_f: apparentTempF,
             vis_km: visibility / 1000.0,
             vis_miles: visibility / 1609.34,
             uv: uv,
@@ -426,10 +432,13 @@ extension StormglassHour {
         let epoch = Int(date.timeIntervalSince1970)
         let dateString = formatDateTime(date)
         
-        let temp = airTemperature?.value ?? 0
+        // API returns temperature in Celsius
+        let tempC = airTemperature?.value ?? 0
+        let tempF = celsiusToFahrenheit(tempC)
         let humidity = self.humidity?.value ?? 0
-        // Calculate apparent temperature from air temperature and humidity
-        let apparentTemp = calculateApparentTemperature(temp: temp, humidity: humidity)
+        // Calculate apparent temperature (functions expect Fahrenheit)
+        let apparentTempF = calculateApparentTemperature(temp: tempF, humidity: humidity)
+        let apparentTempC = fahrenheitToCelsius(apparentTempF)
         let windSpeed = self.windSpeed?.value ?? 0
         let windDir = windDirection?.value ?? 0
         let pressure = self.pressure?.value ?? 0
@@ -447,8 +456,8 @@ extension StormglassHour {
         return HourForecast(
             time_epoch: epoch,
             time: dateString,
-            temp_c: celsiusFromFahrenheit(temp),
-            temp_f: temp,
+            temp_c: tempC,
+            temp_f: tempF,
             is_day: isDay ? 1 : 0,
             condition: condition,
             wind_mph: windSpeed,
@@ -461,12 +470,12 @@ extension StormglassHour {
             precip_in: precip,
             humidity: Int(humidity),
             cloud: Int(cloudCover),
-            feelslike_c: celsiusFromFahrenheit(apparentTemp),
-            feelslike_f: apparentTemp,
-            windchill_c: celsiusFromFahrenheit(calculateWindChill(temp: temp, wind: windSpeed)),
-            windchill_f: calculateWindChill(temp: temp, wind: windSpeed),
-            heatindex_c: celsiusFromFahrenheit(calculateHeatIndex(temp: temp, humidity: humidity)),
-            heatindex_f: calculateHeatIndex(temp: temp, humidity: humidity),
+            feelslike_c: apparentTempC,
+            feelslike_f: apparentTempF,
+            windchill_c: fahrenheitToCelsius(calculateWindChill(temp: tempF, wind: windSpeed)),
+            windchill_f: calculateWindChill(temp: tempF, wind: windSpeed),
+            heatindex_c: fahrenheitToCelsius(calculateHeatIndex(temp: tempF, humidity: humidity)),
+            heatindex_f: calculateHeatIndex(temp: tempF, humidity: humidity),
             dewpoint_c: 0, // Stormglass.io doesn't provide dewpoint in free tier
             dewpoint_f: 0,
             will_it_rain: precip > 0 ? 1 : 0,
@@ -502,8 +511,12 @@ extension StormglassHour {
 
 // MARK: - Helper Functions
 
-private func celsiusFromFahrenheit(_ f: Double) -> Double {
+private func fahrenheitToCelsius(_ f: Double) -> Double {
     return (f - 32) * 5 / 9
+}
+
+private func celsiusToFahrenheit(_ c: Double) -> Double {
+    return (c * 9 / 5) + 32
 }
 
 private func mphToKph(_ mph: Double) -> Double {

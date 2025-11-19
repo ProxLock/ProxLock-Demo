@@ -1,6 +1,12 @@
 import Foundation
 import Combine
 
+/// Temperature unit options.
+public enum TemperatureUnit: String, CaseIterable {
+    case fahrenheit = "°F"
+    case celsius = "°C"
+}
+
 /// The view model responsible for managing the weather data state.
 ///
 /// This class conforms to `ObservableObject` and exposes published properties for the UI to observe.
@@ -21,6 +27,9 @@ public class WeatherViewModel: ObservableObject {
     
     /// An error message if the fetch fails.
     @Published public var errorMessage: String?
+    
+    /// The temperature unit to display (defaults to Fahrenheit).
+    @Published public var temperatureUnit: TemperatureUnit = .fahrenheit
     
     /// The service used to fetch weather data.
     private let weatherService: WeatherService

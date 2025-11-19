@@ -4,6 +4,8 @@ import SwiftUI
 struct WeatherDetailView: View {
     /// The current weather data.
     let current: Current
+    /// The temperature unit to display.
+    let temperatureUnit: TemperatureUnit
     
     var body: some View {
         VStack(spacing: 20) {
@@ -35,7 +37,7 @@ struct WeatherDetailView: View {
                 DetailItem(
                     icon: "thermometer",
                     title: "Feels Like",
-                    value: "\(Int(current.feelslike_f))°F"
+                    value: "\(Int(temperatureUnit == .fahrenheit ? current.feelslike_f : current.feelslike_c))\(temperatureUnit.rawValue)"
                 )
             }
             
@@ -147,6 +149,6 @@ struct DetailItem: View {
         uv: 5.0,
         gust_mph: nil,
         gust_kph: nil
-    ))
+    ), temperatureUnit: .fahrenheit)
     .padding()
 }

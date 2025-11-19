@@ -3,6 +3,7 @@ import SwiftUI
 /// A card view displaying a single day's forecast.
 struct ForecastCardView: View {
     let forecastDay: ForecastDay
+    let temperatureUnit: TemperatureUnit
     
     private var dayName: String {
         let formatter = DateFormatter()
@@ -36,11 +37,11 @@ struct ForecastCardView: View {
                 .lineLimit(2)
             
             HStack(spacing: 8) {
-                Text("\(Int(forecastDay.day.maxtemp_f))°")
+                Text("\(Int(temperatureUnit == .fahrenheit ? forecastDay.day.maxtemp_f : forecastDay.day.maxtemp_c))\(temperatureUnit.rawValue)")
                     .font(.title3)
                     .fontWeight(.semibold)
                 
-                Text("\(Int(forecastDay.day.mintemp_f))°")
+                Text("\(Int(temperatureUnit == .fahrenheit ? forecastDay.day.mintemp_f : forecastDay.day.mintemp_c))\(temperatureUnit.rawValue)")
                     .font(.title3)
                     .foregroundColor(.secondary)
             }
@@ -103,7 +104,7 @@ struct ForecastCardView: View {
                 moon_illumination: 75.0
             ),
             hour: []
-        ))
+        ), temperatureUnit: .fahrenheit)
     }
     .padding()
 }

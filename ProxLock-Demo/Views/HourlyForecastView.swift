@@ -3,6 +3,7 @@ import SwiftUI
 /// A view displaying hourly forecast in a horizontal scrollable list.
 struct HourlyForecastView: View {
     let hours: [HourForecast]
+    let temperatureUnit: TemperatureUnit
     
     private func formatTime(_ timeString: String) -> String {
         let formatter = DateFormatter()
@@ -37,7 +38,7 @@ struct HourlyForecastView: View {
                             }
                             .frame(width: 32, height: 32)
                             
-                            Text("\(Int(hour.temp_f))°")
+                            Text("\(Int(temperatureUnit == .fahrenheit ? hour.temp_f : hour.temp_c))\(temperatureUnit.rawValue)")
                                 .font(.subheadline)
                                 .fontWeight(.medium)
                             
@@ -105,7 +106,7 @@ struct HourlyForecastView: View {
             gust_kph: 19.0,
             uv: 5.0
         )
-    ])
+    ], temperatureUnit: .fahrenheit)
     .padding()
 }
 

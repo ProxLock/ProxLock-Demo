@@ -112,7 +112,7 @@ struct ContentView: View {
                                     .frame(width: 100, height: 100)
                                     
                                     VStack(alignment: .leading, spacing: 8) {
-                                        Text("\(Int(weather.current.temp_f))°")
+                                        Text("\(Int(viewModel.temperatureUnit == .fahrenheit ? weather.current.temp_f : weather.current.temp_c))\(viewModel.temperatureUnit.rawValue)")
                                             .font(.system(size: 72, weight: .bold))
                                         
                                         Text(weather.current.condition.text)
@@ -139,12 +139,12 @@ struct ContentView: View {
                             if let forecast = viewModel.forecast,
                                let firstDay = forecast.forecast.forecastday.first,
                                !firstDay.hour.isEmpty {
-                                HourlyForecastView(hours: firstDay.hour)
+                                HourlyForecastView(hours: firstDay.hour, temperatureUnit: viewModel.temperatureUnit)
                                     .padding(.horizontal)
                             }
                             
                             // Weather Details
-                            WeatherDetailView(current: weather.current)
+                            WeatherDetailView(current: weather.current, temperatureUnit: viewModel.temperatureUnit)
                                 .padding(.horizontal)
                             
                             // 5-Day Forecast
@@ -157,7 +157,7 @@ struct ContentView: View {
                                     ScrollView(.horizontal, showsIndicators: false) {
                                         HStack(spacing: 16) {
                                             ForEach(forecast.forecast.forecastday, id: \.date_epoch) { day in
-                                                ForecastCardView(forecastDay: day)
+                                                ForecastCardView(forecastDay: day, temperatureUnit: viewModel.temperatureUnit)
                                             }
                                         }
                                         .padding(.horizontal)
@@ -191,6 +191,13 @@ struct ContentView: View {
             }
             .navigationTitle("Weather")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                Picker("Temperature Unit", selection: $viewModel.temperatureUnit) {
+                    Text("°F").tag(TemperatureUnit.fahrenheit)
+                    Text("°C").tag(TemperatureUnit.celsius)
+                }
+                .labelsHidden()
+            }
         }
         .onAppear {
             // Load default city on appear
