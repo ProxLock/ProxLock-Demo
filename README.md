@@ -166,7 +166,6 @@ See `WeatherService.swift` for the implementation details.
 
 - [ProxLock iOS SDK Documentation](https://docs.proxlock.dev/ios-sdk/)
 - [Stormglass.io API Documentation](https://docs.stormglass.io/)
-- [ProxLock Web Dashboard](https://docs.proxlock.dev/)
 
 ## License
 
