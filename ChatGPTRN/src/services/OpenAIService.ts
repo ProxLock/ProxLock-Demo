@@ -3,7 +3,7 @@ import { ChatMessage } from '../types';
 
 class OpenAIService {
     private session: ProxLockSession;
-    private baseURL = "https://localhost:8080/proxy";
+    private baseURL = "https://api.proxlock.dev/proxy";
 
     constructor(partialKey: string, associationID: string) {
         // Initialize ProxLockSession
