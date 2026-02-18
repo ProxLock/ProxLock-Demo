@@ -1,10 +1,10 @@
 {
-  "originHash" : "28b5cced60b3d6921aed0c0be0e6f376166f7fe23420db1340255a00dddb1b82",
+  "originHash" : "aa75e862ce7590bea3c2964e962d54dc22de187d3cab8a71b416540ddee9abdf",
   "pins" : [
     {
       "identity" : "proxlock-ios",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/proxlock/proxlock-ios",
+      "location" : "https://github.com/ProxLock/proxlock-ios.git",
       "state" : {
         "revision" : "5dbca7e2fc5f443f2942c1e0dd2aa474d9d01e82",
         "version" : "0.2.0"

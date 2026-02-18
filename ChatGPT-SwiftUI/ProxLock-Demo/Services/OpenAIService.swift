@@ -15,7 +15,7 @@ class OpenAIService {
     init(partialKey: String, associationID: String) {
         self.session = PLSession(
             partialKey: partialKey,
-            assosiationID: associationID
+            associationID: associationID
         )
     }
     

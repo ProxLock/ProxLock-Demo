@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		22A476C62F0F844A00937752 /* ProxLock in Frameworks */ = {isa = PBXBuildFile; productRef = 22A476C52F0F844A00937752 /* ProxLock */; };
+		223B772E2F464F3000C4DC9F /* ProxLock in Frameworks */ = {isa = PBXBuildFile; productRef = 223B772D2F464F3000C4DC9F /* ProxLock */; };
+		223B77312F464F4000C4DC9F /* ProxLock in Frameworks */ = {isa = PBXBuildFile; productRef = 223B77302F464F4000C4DC9F /* ProxLock */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,7 +42,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22A476C62F0F844A00937752 /* ProxLock in Frameworks */,
+				223B77312F464F4000C4DC9F /* ProxLock in Frameworks */,
+				223B772E2F464F3000C4DC9F /* ProxLock in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,7 +95,8 @@
 			);
 			name = "ProxLock-Demo";
 			packageProductDependencies = (
-				22A476C52F0F844A00937752 /* ProxLock */,
+				223B772D2F464F3000C4DC9F /* ProxLock */,
+				223B77302F464F4000C4DC9F /* ProxLock */,
 			);
 			productName = "ProxLock-Demo";
 			productReference = 22EE56E42EC5C89B00BEB3C3 /* ProxLock-Demo.app */;
@@ -124,7 +127,7 @@
 			mainGroup = 22EE56DB2EC5C89B00BEB3C3;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				22A476C12F0F83F100937752 /* XCLocalSwiftPackageReference "../../proxlock-ios" */,
+				223B772F2F464F4000C4DC9F /* XCRemoteSwiftPackageReference "proxlock-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 22EE56E52EC5C89B00BEB3C3 /* Products */;
@@ -369,17 +372,25 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		22A476C12F0F83F100937752 /* XCLocalSwiftPackageReference "../../proxlock-ios" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../proxlock-ios";
+/* Begin XCRemoteSwiftPackageReference section */
+		223B772F2F464F4000C4DC9F /* XCRemoteSwiftPackageReference "proxlock-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ProxLock/proxlock-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.0;
+			};
 		};
-/* End XCLocalSwiftPackageReference section */
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		22A476C52F0F844A00937752 /* ProxLock */ = {
+		223B772D2F464F3000C4DC9F /* ProxLock */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 22A476C12F0F83F100937752 /* XCLocalSwiftPackageReference "../../proxlock-ios" */;
+			productName = ProxLock;
+		};
+		223B77302F464F4000C4DC9F /* ProxLock */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 223B772F2F464F4000C4DC9F /* XCRemoteSwiftPackageReference "proxlock-ios" */;
 			productName = ProxLock;
 		};
 /* End XCSwiftPackageProductDependency section */

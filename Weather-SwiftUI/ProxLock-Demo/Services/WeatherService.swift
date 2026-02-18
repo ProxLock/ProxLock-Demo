@@ -5,7 +5,7 @@ extension PLSession {
     /// The ProxLock session for Stormglass.io API.
     ///
     /// - Important: Replace `PROXLOCK_PARTIAL_KEY` with your actual partial key from ProxLock. Same for `PROXLOCK_ASSOCIATION_ID` with the association id.
-    static let weatherAPI = PLSession(partialKey: ProcessInfo.processInfo.environment["PROXLOCK_PARTIAL_KEY"]!, assosiationID: ProcessInfo.processInfo.environment["PROXLOCK_ASSOCIATION_ID"]!)
+    static let weatherAPI = PLSession(partialKey: ProcessInfo.processInfo.environment["PROXLOCK_PARTIAL_KEY"]!, associationID: ProcessInfo.processInfo.environment["PROXLOCK_ASSOCIATION_ID"]!)
 }
 
 /// A service responsible for fetching weather data from Stormglass.io Weather API.
