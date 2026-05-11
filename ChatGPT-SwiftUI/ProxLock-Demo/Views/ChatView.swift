@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ChatView: View {
     @State private var viewModel = ChatViewModel()
@@ -17,7 +18,7 @@ struct ChatView: View {
                 // Messages List
                 ScrollViewReader { proxy in
                     ScrollView {
-                        LazyVStack(spacing: 16) {
+                        VStack(spacing: 16) {
                             if viewModel.messages.isEmpty {
                                 VStack(spacing: 20) {
                                     Image(systemName: "bubble.left.and.bubble.right")
@@ -38,6 +39,7 @@ struct ChatView: View {
                             
                             ForEach(viewModel.messages) { message in
                                 MessageBubbleView(message: message)
+                                    .equatable()
                                     .id(message.id)
                             }
                             
@@ -50,24 +52,25 @@ struct ChatView: View {
                                         .foregroundColor(.secondary)
                                 }
                                 .padding()
-                                .id("loading")
                             }
                         }
                         .padding(.horizontal)
                         .padding(.vertical, 8)
+                        .transaction { transaction in
+                            transaction.animation = nil
+                        }
+                    }
+                    .transaction { transaction in
+                        transaction.animation = nil
                     }
                     .onChange(of: viewModel.messages.count) { _, _ in
                         if let lastMessage = viewModel.messages.last {
-                            withAnimation {
-                                proxy.scrollTo(lastMessage.id, anchor: .bottom)
-                            }
+                            proxy.scrollTo(lastMessage.id, anchor: .bottom)
                         }
                     }
-                    .onChange(of: viewModel.isLoading) { _, isLoading in
-                        if isLoading {
-                            withAnimation {
-                                proxy.scrollTo("loading", anchor: .bottom)
-                            }
+                    .onChange(of: viewModel.messages.last?.content) { _, _ in
+                        if let lastMessage = viewModel.messages.last {
+                            proxy.scrollTo(lastMessage.id, anchor: .bottom)
                         }
                     }
                 }
@@ -157,7 +160,7 @@ struct ChatView: View {
     }
 }
 
-struct MessageBubbleView: View {
+struct MessageBubbleView: View, Equatable {
     let message: ChatMessage
     
     var body: some View {
@@ -167,9 +170,10 @@ struct MessageBubbleView: View {
             }
             
             VStack(alignment: message.role == .user ? .trailing : .leading, spacing: 4) {
-                Text(message.content)
-                    .font(.body)
-                    .foregroundColor(message.role == .user ? .white : .primary)
+                BubbleTextView(
+                    text: message.content,
+                    color: message.role == .user ? .white : .label
+                )
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
                     .background(
@@ -192,7 +196,34 @@ struct MessageBubbleView: View {
     }
 }
 
+struct BubbleTextView: UIViewRepresentable {
+    let text: String
+    let color: UIColor
+    private let fallbackWidth: CGFloat = 280
+
+    func makeUIView(context: Context) -> UILabel {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.lineBreakMode = .byWordWrapping
+        label.adjustsFontForContentSizeCategory = true
+        label.font = .preferredFont(forTextStyle: .body)
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        return label
+    }
+
+    func updateUIView(_ label: UILabel, context: Context) {
+        label.text = text
+        label.textColor = color
+    }
+
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView label: UILabel, context: Context) -> CGSize? {
+        let width = proposal.width ?? fallbackWidth
+        return label.sizeThatFits(
+            CGSize(width: width, height: .greatestFiniteMagnitude)
+        )
+    }
+}
+
 #Preview {
     ChatView()
 }
-

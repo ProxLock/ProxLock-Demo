@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct ChatMessage: Identifiable, Codable {
+struct ChatMessage: Identifiable, Codable, Equatable {
     let id: String
     let role: MessageRole
-    let content: String
+    var content: String
     let timestamp: Date
     
     init(id: String = UUID().uuidString, role: MessageRole, content: String, timestamp: Date = Date()) {
@@ -26,4 +26,3 @@ enum MessageRole: String, Codable {
     case assistant
     case system
 }
-

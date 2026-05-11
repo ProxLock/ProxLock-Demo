@@ -52,21 +52,31 @@ class ChatViewModel {
         
         let userMessage = ChatMessage(role: .user, content: inputText)
         messages.append(userMessage)
+        let requestMessages = messages
         
-        let messageToSend = inputText
         inputText = ""
         isLoading = true
         errorMessage = nil
         
+        var assistantMessageID: String?
+
         do {
-            let response = try await service.sendMessage(messages: messages)
-            let assistantMessage = ChatMessage(role: .assistant, content: response)
-            messages.append(assistantMessage)
+            for try await chunk in try await service.streamMessage(messages: requestMessages) {
+                if let assistantMessageID,
+                   let index = messages.firstIndex(where: { $0.id == assistantMessageID }) {
+                    messages[index].content += chunk
+                } else {
+                    let assistantMessage = ChatMessage(role: .assistant, content: chunk)
+                    assistantMessageID = assistantMessage.id
+                    messages.append(assistantMessage)
+                }
+            }
         } catch {
             errorMessage = error.localizedDescription
-            // Remove the user message if there was an error
-            if let index = messages.firstIndex(where: { $0.id == userMessage.id }) {
-                messages.remove(at: index)
+            // Remove the pending exchange if there was an error
+            messages.removeAll { message in
+                let isAssistantMessage = assistantMessageID.map { message.id == $0 } ?? false
+                return message.id == userMessage.id || isAssistantMessage
             }
         }
         
@@ -78,4 +88,3 @@ class ChatViewModel {
         errorMessage = nil
     }
 }
-
