@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ProxLock/proxlock-ios.git",
       "state" : {
-        "revision" : "5dbca7e2fc5f443f2942c1e0dd2aa474d9d01e82",
-        "version" : "0.2.0"
+        "revision" : "7e440316ecb8c4a94f34007844be680aac24b5a1",
+        "version" : "0.3.0"
       }
     }
   ],
